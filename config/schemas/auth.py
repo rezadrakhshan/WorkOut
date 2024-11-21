@@ -13,3 +13,8 @@ class SignIn(BaseModel):
 
 class GetUserInformation(BaseModel):
     email: str
+
+
+class ChangePassword(BaseModel):
+    email: str
+    new_password: str

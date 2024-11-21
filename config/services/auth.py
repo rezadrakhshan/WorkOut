@@ -30,3 +30,15 @@ def sign_in_user_service(user, db):
         return {"access_token": token, "token_type": "bearer"}
     else:
         raise HTTPException(status_code=404, detail="Email or password is invalid")
+
+
+def change_password_service(user,db):
+    user_query = db.query(User).filter(User.email == user.email).first()
+    if user_query:
+        new_password = hash_password(user.new_password)
+        user_query.password = new_password
+        db.commit()
+        db.refresh(user_query)
+        return {"message": "Password changed successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="Email is invalid")
