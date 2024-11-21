@@ -3,6 +3,14 @@ from db.models import User
 from utils.hash_password import hash_password, verify_password, create_access_token
 
 
+def get_user_information(user, db):
+    user_query = db.query(User).filter(User.email == user.email).first()
+    if user_query is None:
+        raise HTTPException(status_code=404, detail="User does not exists")
+    else:
+        return user_query
+
+
 def sign_up_user_service(user, db):
     user_query = db.query(User).filter(User.email == user.email).first()
     if user_query is None:

@@ -9,3 +9,7 @@ class SignUp(BaseModel):
 class SignIn(BaseModel):
     email: str
     password: str
+
+
+class GetUserInformation(BaseModel):
+    email: str
