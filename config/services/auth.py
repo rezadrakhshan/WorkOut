@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from db.models import User
-from utils.hash_password import hash_password
+from utils.hash_password import hash_password, verify_password, create_access_token
 
 
 def sign_up_user_service(user, db):
@@ -10,6 +10,15 @@ def sign_up_user_service(user, db):
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        raise HTTPException(status_code=200,detail="User registered successfully")
+        return {"message": "User registered successfully"}
     else:
         raise HTTPException(status_code=400, detail="Email already exists")
+
+
+def sign_in_user_service(user, db):
+    user_query = db.query(User).filter(User.email == user.email).first()
+    if user_query and verify_password(user.password, user_query.password):
+        token = create_access_token(data={"sub": user_query.email})
+        return {"access_token": token, "token_type": "bearer"}
+    else:
+        raise HTTPException(status_code=404, detail="Email or password is invalid")
