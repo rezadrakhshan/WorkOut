@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import send_code,auth
+from routers import send_code, auth, plans
 from db import models
 from db.database import engine
 
@@ -17,5 +17,6 @@ app.add_middleware(
 
 app.include_router(send_code.router)
 app.include_router(auth.router)
+app.include_router(plans.router)
 
 models.Base.metadata.create_all(bind=engine)
