@@ -6,4 +6,9 @@ class CreateCategory(BaseModel):
 
 
 class RemoveCategory(BaseModel):
-    id : int
+    id: int
+
+
+class UpdateCategory(BaseModel):
+    id: int
+    title: str
