@@ -2,9 +2,19 @@ from fastapi import APIRouter, HTTPException, Depends
 from schemas.plans import CreateCategory
 from sqlalchemy.orm import Session
 from db.database import get_db
+from db.models import Category
 from services.plans import create_category_service
 
 router = APIRouter(tags=["plans"])
+
+
+@router.get("/get-category")
+def get_category(db: Session = Depends(get_db)):
+    try:
+        categories = db.query(Category).all()
+        return categories
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/create-category", response_model=dict)
