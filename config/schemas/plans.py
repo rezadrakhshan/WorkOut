@@ -12,3 +12,16 @@ class RemoveCategory(BaseModel):
 class UpdateCategory(BaseModel):
     id: int
     title: str
+
+
+class CreatePlan(BaseModel):
+    title: str
+    time: str
+
+
+class CreateWorkOut(BaseModel):
+    title: str
+    set: int
+    type: str
+    description: str
+    plan: int

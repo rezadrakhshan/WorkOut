@@ -1,4 +1,4 @@
-from db.models import Category
+from db.models import Category, Plan
 from fastapi import HTTPException
 
 
@@ -26,3 +26,18 @@ def update_category_service(category, db):
     object.title = category.title
     db.commit()
     return {"msg": "Category Updated"}
+
+
+async def create_plan_service(plan, file, db):
+    filename = file.filename
+    with open(f"uploaded_files/{filename}", "wb") as f:
+        content = await file.read()
+        f.write(content)
+
+    new_plan = Plan(
+        title=plan.title, time=plan.time, image=f"uploaded_files/{filename}"
+    )
+    db.add(new_plan)
+    db.commit()
+    db.refresh(new_plan)
+    return {"msg": "Plan was Created"}

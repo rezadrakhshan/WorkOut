@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
-from schemas.plans import CreateCategory, RemoveCategory, UpdateCategory
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
+from schemas.plans import CreateCategory, RemoveCategory, UpdateCategory, CreatePlan
 from sqlalchemy.orm import Session
 from db.database import get_db
 from db.models import Category
@@ -7,6 +7,7 @@ from services.plans import (
     create_category_service,
     remove_category_service,
     update_category_service,
+    create_plan_service,
 )
 
 router = APIRouter(tags=["plans"])
@@ -43,6 +44,19 @@ def remove_category_router(category: RemoveCategory, db: Session = Depends(get_d
 def update_category_router(category: UpdateCategory, db: Session = Depends(get_db)):
     try:
         object = update_category_service(category, db)
+        return object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/create-plan", response_model=dict)
+async def create_plan_router(
+    plan: CreatePlan = Depends(),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    try:
+        object = await create_plan_service(plan, file, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

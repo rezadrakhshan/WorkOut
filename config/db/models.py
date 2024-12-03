@@ -1,5 +1,6 @@
 from db.database import Base
-from sqlalchemy import Column, String, Integer
+from sqlalchemy.types import String, Integer
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -25,8 +26,7 @@ class Plan(Base):
     title = Column(String)
     time = Column(String)
     image = Column(String)
-    workout = relationship("Category", back_populates="plan")
-
+    workouts = relationship("WorkOut", back_populates="plan")  
 
 class WorkOut(Base):
     __tablename__ = "workouts"
@@ -37,4 +37,6 @@ class WorkOut(Base):
     image = Column(String)
     type = Column(String)
     description = Column(String)
-    plan = relationship("Plan", back_populates="workout")
+    plan_id = Column(Integer, ForeignKey("plans.id"))
+    plan = relationship("Plan", back_populates="workouts")
+
