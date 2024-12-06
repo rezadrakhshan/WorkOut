@@ -1,5 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from schemas.plans import CreateCategory, RemoveCategory, UpdateCategory, CreatePlan
+from schemas.plans import (
+    CreateCategory,
+    RemoveCategory,
+    UpdateCategory,
+    CreatePlan,
+    CreateWorkOut,
+)
 from sqlalchemy.orm import Session
 from db.database import get_db
 from db.models import Category
@@ -8,6 +14,7 @@ from services.plans import (
     remove_category_service,
     update_category_service,
     create_plan_service,
+    create_workout_service,
 )
 
 router = APIRouter(tags=["plans"])
@@ -57,6 +64,19 @@ async def create_plan_router(
 ):
     try:
         object = await create_plan_service(plan, file, db)
+        return object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/create-workout")
+async def create_workout_router(
+    workout: CreateWorkOut = Depends(),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    try:
+        object = await create_workout_service(workout, file, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

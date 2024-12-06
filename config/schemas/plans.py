@@ -16,7 +16,7 @@ class UpdateCategory(BaseModel):
 
 class CreatePlan(BaseModel):
     title: str
-    time: str
+    time: int
 
 
 class CreateWorkOut(BaseModel):
@@ -25,3 +25,11 @@ class CreateWorkOut(BaseModel):
     type: str
     description: str
     plan: int
+
+
+class CreateWorkOut(BaseModel):
+    title: str
+    set: int
+    type: str
+    description: str
+    plan_id: int

@@ -1,5 +1,6 @@
-from db.models import Category, Plan
+from db.models import Category, Plan, WorkOut
 from fastapi import HTTPException
+import uuid
 
 
 def create_category_service(category, db):
@@ -29,15 +30,37 @@ def update_category_service(category, db):
 
 
 async def create_plan_service(plan, file, db):
-    filename = file.filename
-    with open(f"uploaded_files/{filename}", "wb") as f:
+    filename = f"{uuid.uuid4().hex}_{file.filename}"
+    with open(f"uploaded_files/Plan/{filename}", "wb") as f:
         content = await file.read()
         f.write(content)
 
     new_plan = Plan(
-        title=plan.title, time=plan.time, image=f"uploaded_files/{filename}"
+        title=plan.title, time=plan.time, image=f"uploaded_files/Plan/{filename}"
     )
     db.add(new_plan)
     db.commit()
     db.refresh(new_plan)
     return {"msg": new_plan}
+
+
+async def create_workout_service(workout, file, db):
+    get_plan = db.query(Plan).filter(Plan.id == workout.plan_id).first()
+    if get_plan is None:
+        raise HTTPException(status_code=404, detail="Plan does not exists")
+    filename = f"{uuid.uuid4().hex}_{file.filename}"
+    with open(f"uploaded_files/Workout/{filename}", "wb") as f:
+        content = await file.read()
+        f.write(content)
+    new_workout = WorkOut(
+        title=workout.title,
+        set=workout.set,
+        image=f"uploaded_files/Workout/{filename}",
+        type=workout.type,
+        description=workout.description,
+        plan_id=workout.plan_id,
+    )
+    db.add(new_workout)
+    db.commit()
+    db.refresh(new_workout)
+    return new_workout
