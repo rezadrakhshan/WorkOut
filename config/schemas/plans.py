@@ -33,3 +33,7 @@ class CreateWorkOut(BaseModel):
     type: str
     description: str
     plan_id: int
+
+
+class RemovePlan(BaseModel):
+    id:int

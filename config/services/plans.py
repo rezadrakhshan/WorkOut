@@ -1,6 +1,7 @@
 from db.models import Category, Plan, WorkOut
 from fastapi import HTTPException
 import uuid
+from sqlalchemy.orm import Session
 
 
 def create_category_service(category, db):
@@ -64,3 +65,16 @@ async def create_workout_service(workout, file, db):
     db.commit()
     db.refresh(new_workout)
     return new_workout
+
+
+async def remove_plan_service(plan, db: Session):
+    plan = db.query(Plan).filter(Plan.id == plan.id).first()
+    if plan is None:
+        raise HTTPException(status_code=404, detail="Plan does not exists")
+    workouts = db.query(WorkOut).filter(WorkOut.plan_id == plan.id)
+    for i in workouts:
+        db.delete(i)
+        db.commit()
+    db.delete(plan)
+    db.commit()
+    return {"msg":"Plan was delete"}

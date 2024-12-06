@@ -1,15 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.auth import SignUp, SignIn, GetUserInformation, ChangePassword
+from schemas.auth import *
 from schemas.send_code import SendEmail
 from services.send_code import send_code_with_email_service
 from db.database import get_db
 from sqlalchemy.orm import Session
-from services.auth import (
-    sign_up_user_service,
-    sign_in_user_service,
-    get_user_information,
-    change_password_service,
-)
+from services.auth import *
 from db.models import User
 
 router = APIRouter(tags=["Authentication"])
