@@ -40,4 +40,4 @@ async def create_plan_service(plan, file, db):
     db.add(new_plan)
     db.commit()
     db.refresh(new_plan)
-    return {"msg": "Plan was Created"}
+    return {"msg": new_plan}

@@ -49,7 +49,7 @@ def update_category_router(category: UpdateCategory, db: Session = Depends(get_d
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/create-plan", response_model=dict)
+@router.post("/create-plan")
 async def create_plan_router(
     plan: CreatePlan = Depends(),
     file: UploadFile = File(...),
