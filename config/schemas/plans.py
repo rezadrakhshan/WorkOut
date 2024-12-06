@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 class CreateCategory(BaseModel):
@@ -41,3 +42,24 @@ class RemovePlan(BaseModel):
 
 class RemoveWorkOut(BaseModel):
     id: int
+
+
+class PlanResponse(BaseModel):
+    id: int
+    title: str
+    time: str
+    image: str
+    workouts: List["WorkOutResponse"] = []
+
+
+class WorkOutResponse(BaseModel):
+    id: int
+    title: str
+    set: int
+    image: str
+    type: str
+    description: str
+    plan_id: int
+
+    class Config:
+        orm_mode = True

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from schemas.plans import *
+from config.schemas.plans import *
 from sqlalchemy.orm import Session
-from db.database import get_db
-from db.models import Category
-from services.plans import *
+from config.db.database import get_db
+from config.db.models import Category
+from config.services.plans import *
+from typing import List
 
 router = APIRouter(tags=["plans"])
 
@@ -84,5 +85,25 @@ async def remove_workout_router(workout: RemoveWorkOut, db: Session = Depends(ge
     try:
         object = await remove_workout_service(workout, db)
         return object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/all-plans", response_model=List[PlanResponse])
+def get_all_plans(db: Session = Depends(get_db)):
+    try:
+        plans = db.query(Plan).all()
+        return plans
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/single-plan/{plan_id}")
+def get_single_plan(plan_id: int, db: Session = Depends(get_db)):
+    try:
+        plan = db.query(Plan).filter(Plan.id == plan_id).first()
+        if plan is None:
+            raise HTTPException(status_code=404, detail="Plan does not exists")
+        return plan
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
