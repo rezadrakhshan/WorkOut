@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from config.schemas.plans import *
 from sqlalchemy.orm import Session
 from config.db.database import get_db
-from config.db.models import Category
+from config.db.models import *
 from config.services.plans import *
 from typing import List
 
@@ -98,12 +98,32 @@ def get_all_plans(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/single-plan/{plan_id}",response_model=PlanResponse)
+@router.get("/single-plan/{plan_id}", response_model=PlanResponse)
 def get_single_plan(plan_id: int, db: Session = Depends(get_db)):
     try:
         plan = db.query(Plan).filter(Plan.id == plan_id).first()
         if plan is None:
             raise HTTPException(status_code=404, detail="Plan does not exists")
         return plan
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/all-workouts")
+def get_all_workouts(db: Session = Depends(get_db)):
+    try:
+        workouts = db.query(WorkOut).all()
+        return workouts
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/single-workout/{id}")
+def get_single_workout(id: int, db: Session = Depends(get_db)):
+    try:
+        workout = db.query(WorkOut).filter(WorkOut.id == id).first()
+        if workout is None:
+            raise HTTPException(status_code=404, detail="Workout does not exists")
+        return workout
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

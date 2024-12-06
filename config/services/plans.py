@@ -37,7 +37,7 @@ async def create_plan_service(plan, file, db):
         f.write(content)
 
     new_plan = Plan(
-        title=plan.title, time=plan.time, image=f"uploaded_files/Plan/{filename}"
+        title=plan.title, time=plan.time, image=f"config/uploaded_files/Plan/{filename}"
     )
     db.add(new_plan)
     db.commit()
@@ -56,7 +56,7 @@ async def create_workout_service(workout, file, db):
     new_workout = WorkOut(
         title=workout.title,
         set=workout.set,
-        image=f"uploaded_files/Workout/{filename}",
+        image=f"config/uploaded_files/Workout/{filename}",
         type=workout.type,
         description=workout.description,
         plan_id=workout.plan_id,

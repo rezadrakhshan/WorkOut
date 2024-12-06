@@ -2,10 +2,12 @@ from fastapi import FastAPI
 from config.routers import send_code, auth, plans
 from config.db import models
 from config.db.database import engine
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="WorkOut")
+app.mount("/config/uploaded_files", StaticFiles(directory="config/uploaded_files"), name="uploaded_files")
 
-from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,25 +24,3 @@ app.include_router(plans.router)
 models.Base.metadata.create_all(bind=engine)
 
 
-# class ImageMetaData(BaseModel):
-#     title: str
-#     description: str
-
-
-# @app.post("/upload/")
-# async def upload_image(
-#     metadata: ImageMetaData = Depends(),
-#     file: UploadFile = File(...)
-# ):
-#     filename = file.filename
-
-#     # ذخیره فایل
-#     with open(f"uploaded_files/{filename}", "wb") as f:
-#         content = await file.read()
-#         f.write(content)
-
-#     return {
-#         "title": metadata.title,
-#         "description": metadata.description,
-#         "filename": filename
-#     }
