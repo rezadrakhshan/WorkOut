@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.auth import *
-from schemas.send_code import SendEmail
-from services.send_code import send_code_with_email_service
-from db.database import get_db
+from config.schemas.auth import *
+from config.schemas.send_code import SendEmail
+from config.services.send_code import send_code_with_email_service
+from config.db.database import get_db
 from sqlalchemy.orm import Session
-from services.auth import *
-from db.models import User
+from config.services.auth import *
+from config.db.models import User
 
 router = APIRouter(tags=["Authentication"])
 

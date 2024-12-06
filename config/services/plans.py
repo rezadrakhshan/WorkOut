@@ -1,4 +1,4 @@
-from db.models import Category, Plan, WorkOut
+from config.db.models import Category, Plan, WorkOut
 from fastapi import HTTPException
 import uuid
 from sqlalchemy.orm import Session
@@ -32,7 +32,7 @@ def update_category_service(category, db):
 
 async def create_plan_service(plan, file, db):
     filename = f"{uuid.uuid4().hex}_{file.filename}"
-    with open(f"uploaded_files/Plan/{filename}", "wb") as f:
+    with open(f"config/uploaded_files/Plan/{filename}", "wb") as f:
         content = await file.read()
         f.write(content)
 
@@ -50,7 +50,7 @@ async def create_workout_service(workout, file, db):
     if get_plan is None:
         raise HTTPException(status_code=404, detail="Plan does not exists")
     filename = f"{uuid.uuid4().hex}_{file.filename}"
-    with open(f"uploaded_files/Workout/{filename}", "wb") as f:
+    with open(f"config/uploaded_files/Workout/{filename}", "wb") as f:
         content = await file.read()
         f.write(content)
     new_workout = WorkOut(

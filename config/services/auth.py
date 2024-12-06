@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from db.models import User
-from utils.hash_password import hash_password, verify_password, create_access_token
+from config.db.models import User
+from config.utils.hash_password import hash_password, verify_password, create_access_token
 
 
 def get_user_information(user, db):

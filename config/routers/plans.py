@@ -98,7 +98,7 @@ def get_all_plans(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/single-plan/{plan_id}")
+@router.get("/single-plan/{plan_id}",response_model=PlanResponse)
 def get_single_plan(plan_id: int, db: Session = Depends(get_db)):
     try:
         plan = db.query(Plan).filter(Plan.id == plan_id).first()

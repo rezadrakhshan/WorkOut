@@ -1,6 +1,6 @@
 from fastapi import APIRouter,HTTPException
-from services.send_code import send_code_with_email_service
-from schemas.send_code import SendEmail
+from config.services.send_code import send_code_with_email_service
+from config.schemas.send_code import SendEmail
 
 router = APIRouter()
 

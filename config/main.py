@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from routers import send_code, auth, plans
-from db import models
-from db.database import engine
+from config.routers import send_code, auth, plans
+from config.db import models
+from config.db.database import engine
 
 app = FastAPI(title="WorkOut")
 
