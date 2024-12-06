@@ -77,3 +77,12 @@ async def remove_plan_router(plan: RemovePlan, db: Session = Depends(get_db)):
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/remove-workout")
+async def remove_workout_router(workout: RemoveWorkOut, db: Session = Depends(get_db)):
+    try:
+        object = await remove_workout_service(workout, db)
+        return object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

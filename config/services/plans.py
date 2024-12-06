@@ -77,4 +77,13 @@ async def remove_plan_service(plan, db: Session):
         db.commit()
     db.delete(plan)
     db.commit()
-    return {"msg":"Plan was delete"}
+    return {"msg": "Plan was delete"}
+
+
+async def remove_workout_service(workout, db: Session):
+    workout = db.query(WorkOut).filter(WorkOut.id == workout.id).first()
+    if workout is None:
+        raise HTTPException(status_code=404, detail="Workout does not exists")
+    db.delete(workout)
+    db.commit()
+    return {"msg": "Workout was delete"}

@@ -36,4 +36,8 @@ class CreateWorkOut(BaseModel):
 
 
 class RemovePlan(BaseModel):
-    id:int
+    id: int
+
+
+class RemoveWorkOut(BaseModel):
+    id: int
