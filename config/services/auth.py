@@ -18,7 +18,8 @@ def sign_up_user_service(user, db):
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        return {"message": "User registered successfully"}
+        token = create_access_token(data={"sub": new_user.email})
+        return {"access_token": token, "token_type": "bearer"}
     else:
         raise HTTPException(status_code=400, detail="Email already exists")
 
