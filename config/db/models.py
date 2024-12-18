@@ -11,11 +11,6 @@ class User(Base):
     password = Column(String, nullable=False)
 
 
-class Category(Base):
-    __tablename__ = "categories"
-
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    title = Column(String)
 
 
 class Plan(Base):
