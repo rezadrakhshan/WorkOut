@@ -1,7 +1,6 @@
 from config.db.database import Base
-from sqlalchemy.types import String, Integer
-from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.types import String, Integer, Boolean, PickleType
+from sqlalchemy import Column
 
 
 class User(Base):
@@ -23,20 +22,25 @@ class Plan(Base):
     __tablename__ = "plans"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    title = Column(String)
-    time = Column(String)
+    name = Column(String)
+    gener = Column(String)
     image = Column(String)
-    workouts = relationship("WorkOut", back_populates="plan")  
+    level = Column(String)
+    work_out_type = Column(String)
+    required_time = Column(Integer)
+    plan_session_type = Column(String)
+    sessions = Column(PickleType)
 
-class WorkOut(Base):
+
+class Exercize(Base):
     __tablename__ = "workouts"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    title = Column(String)
-    set = Column(Integer)
+    name = Column(String)
     image = Column(String)
-    type = Column(String)
-    description = Column(String)
-    plan_id = Column(Integer, ForeignKey("plans.id"))
-    plan = relationship("Plan", back_populates="workouts")
-
+    need_equipment = Column(Boolean, default=False)
+    muscle = Column(String)
+    difficulty = Column(String)
+    number_of_sets = Column(Integer)
+    required_time = Column(Integer)
+    description = Column(PickleType)
