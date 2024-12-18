@@ -4,16 +4,16 @@ from typing import List
 
 
 class CreatePlan(BaseModel):
-    title: str
-    time: int
+    name:str
+    gener:str
+    image:str
+    level:str
+    work_out_type:str
+    required_time:int
+    plan_session_type:str
+    sessions:str
 
 
-class CreateWorkOut(BaseModel):
-    title: str
-    set: int
-    type: str
-    description: str
-    plan: int
 
 
 class CreateWorkOut(BaseModel):
