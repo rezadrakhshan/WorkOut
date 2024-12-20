@@ -1,19 +1,19 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class CreatePlan(BaseModel):
-    name:str
-    gener:str
-    level:str
-    work_out_type:str
+    name: str
+    gener: str
+    level: str
+    work_out_type: str
     required_time: int
-    plan_session_type:str
-    sessions:str
+    plan_session_type: str
+    sessions: str
 
 
 class RemovePlan(BaseModel):
-    id:int
+    id: int
 
 
 class CreateExercise(BaseModel):
@@ -25,3 +25,7 @@ class CreateExercise(BaseModel):
     number_of_sets: int
     required_time: int
     description: str
+
+
+class GetAllPlans(BaseModel):
+    type: Optional[str]

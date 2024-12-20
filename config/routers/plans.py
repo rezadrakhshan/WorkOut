@@ -46,11 +46,11 @@ async def remove_plan_router(id: RemovePlan, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/get-all-plan")
-async def get_all_plan_router(db: Session = Depends(get_db)):
+@router.post("/get-all-plan") 
+async def get_all_plan_router(type:GetAllPlans, db: Session = Depends(get_db)):
     try:
-        plan_query = db.query(Plan).all()
-        return plan_query
+        object = await get_all_plan_service(type, db)
+        return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
