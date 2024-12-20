@@ -27,8 +27,8 @@ class Plan(Base):
     sessions = Column(PickleType)
 
 
-class Exercize(Base):
-    __tablename__ = "workouts"
+class Exercise(Base):
+    __tablename__ = "exercises"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String)
@@ -36,6 +36,7 @@ class Exercize(Base):
     need_equipment = Column(Boolean, default=False)
     muscle = Column(String)
     difficulty = Column(String)
+    sets = Column(PickleType)
     number_of_sets = Column(Integer)
     required_time = Column(Integer)
-    description = Column(PickleType)
+    description = Column(String)

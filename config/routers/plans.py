@@ -28,14 +28,13 @@ async def create_plan_router(
         work_out_type=work_out_type,
         required_time=required_time,
         plan_session_type=plan_session_type,
-        sessions=sessions
+        sessions=sessions,
     )
     try:
         object = await create_plan_service(plan, file, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 @router.delete("/remove-plan")
@@ -60,6 +59,36 @@ async def get_all_plan_router(db: Session = Depends(get_db)):
 async def get_single_plan_router(plan_id: int, db: Session = Depends(get_db)):
     try:
         object = await get_single_plan_service(plan_id, db)
+        return object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/create-exercise")
+async def create_exercise_router(
+    name: Annotated[str, Form()],
+    image: Annotated[UploadFile, File(description="A file read as UploadFile")],
+    need_equipment: Annotated[bool, Form()],
+    muscle: Annotated[str, Form()],
+    difficulty: Annotated[str, Form()],
+    sets: Annotated[List[int], Form()],
+    number_of_sets: Annotated[int, Form()],
+    required_time: Annotated[int, Form()],
+    description: Annotated[str, Form()],
+    db: Session = Depends(get_db),
+):
+    exercise = CreateExercise(
+        name=name,
+        need_equipment=need_equipment,
+        muscle=muscle,
+        difficulty=difficulty,
+        sets=sets,
+        number_of_sets=number_of_sets,
+        required_time=required_time,
+        description=description,
+    )
+    try: 
+        object = await create_exercise_service(exercise, image, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

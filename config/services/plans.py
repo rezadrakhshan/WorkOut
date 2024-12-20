@@ -1,8 +1,9 @@
-from config.db.models import Plan
-from config.schemas.plans import UpdatePlan
+from config.db.models import Plan,Exercise
 from sqlalchemy.orm import Session
 from fastapi import HTTPException,UploadFile
 import uuid
+import aiofiles
+from config.schemas.plans import CreateExercise
 
 
 async def create_plan_service(plan, file, db: Session):
@@ -25,38 +26,6 @@ async def create_plan_service(plan, file, db: Session):
     db.refresh(new_plan)
     return {"msg": new_plan}
 
-async def update_plan_service(plan_id: int, plan: UpdatePlan, file: UploadFile, db: Session):
-    db_plan = db.query(Plan).filter(Plan.id == plan_id).first()
-
-    if not db_plan:
-        raise HTTPException(status_code=404, detail="Plan not found")
-
-    if file:
-        filename = f"{uuid.uuid4().hex}_{file.filename}"
-        with open(f"config/uploaded_files/Plan/{filename}", "wb") as f:
-            content = await file.read()
-            f.write(content)
-        db_plan.image = f"config/uploaded_files/Plan/{filename}"
-
-    if plan.name is not None:
-        db_plan.name = plan.name
-    if plan.gener is not None:
-        db_plan.gener = plan.gener
-    if plan.level is not None:
-        db_plan.level = plan.level
-    if plan.work_out_type is not None:
-        db_plan.work_out_type = plan.work_out_type
-    if plan.required_time is not None:
-        db_plan.required_time = plan.required_time
-    if plan.plan_session_type is not None:
-        db_plan.plan_session_type = plan.plan_session_type
-    if plan.sessions is not None:
-        db_plan.sessions = plan.sessions
-
-    db.commit()
-    db.refresh(db_plan)
-    return {"msg": db_plan}
-
 
 
 async def remove_plan_service(plan_id, db: Session):
@@ -73,3 +42,27 @@ async def get_single_plan_service(plan_id, db: Session):
     if db_query is None:
         raise HTTPException(status_code=404, detail="Plan does not exists")
     return db_query
+
+
+async def create_exercise_service(exercise: CreateExercise, file: UploadFile, db: Session):
+    filename = f"{uuid.uuid4().hex}_{file.filename}"
+    async with aiofiles.open(f"config/uploaded_files/exercise/{filename}", "wb") as f:
+        content = await file.read()
+        await f.write(content)
+    
+    new_exercise = Exercise(
+        name=exercise.name,
+        image=f"config/uploaded_files/exercise/{filename}",
+        need_equipment=exercise.need_equipment,
+        muscle=exercise.muscle,
+        difficulty=exercise.difficulty,
+        sets=exercise.sets,
+        number_of_sets=exercise.number_of_sets,
+        required_time=exercise.required_time,
+        description=exercise.description
+    )
+    
+    db.add(new_exercise)
+    db.commit()
+    db.refresh(new_exercise)
+    return {"msg": new_exercise}
