@@ -66,3 +66,12 @@ async def create_exercise_service(exercise: CreateExercise, file: UploadFile, db
     db.commit()
     db.refresh(new_exercise)
     return {"msg": new_exercise}
+
+
+async def remove_exercise_service(id,db:Session):
+    query_object = db.query(Exercise).filter(Exercise.id == id).first()
+    if query_object is None:
+        raise HTTPException(status_code=404,detail="Exercise not found")
+    db.delete(query_object)
+    db.commit()
+    return {"msg":"Exercise deleted"}

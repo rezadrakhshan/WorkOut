@@ -87,8 +87,17 @@ async def create_exercise_router(
         required_time=required_time,
         description=description,
     )
-    try: 
+    try:
         object = await create_exercise_service(exercise, image, db)
+        return object
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/remove-exercise/{exercise_id}")
+async def remove_exercise_router(exercise_id: int, db: Session = Depends(get_db)):
+    try:
+        object = await remove_exercise_service(exercise_id, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
