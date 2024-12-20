@@ -46,8 +46,8 @@ async def remove_plan_router(id: RemovePlan, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/get-all-plan") 
-async def get_all_plan_router(type:GetAllPlans, db: Session = Depends(get_db)):
+@router.post("/get-all-plan")
+async def get_all_plan_router(type: GetAllPlans, db: Session = Depends(get_db)):
     try:
         object = await get_all_plan_service(type, db)
         return object
@@ -101,3 +101,23 @@ async def remove_exercise_router(exercise_id: int, db: Session = Depends(get_db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/get-all-exercise")
+async def get_all_exercise_router(db: Session = Depends(get_db)):
+    try:
+        db_query = db.query(Exercise).all()
+        return db_query
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/get-single-exercise/{id}")
+async def get_single_exercise(id: int, db: Session = Depends(get_db)):
+    try:
+        db_query = db.query(Exercise).filter(Exercise.id == id).first()
+        if db_query is None:
+            raise HTTPException(status_code=404, detail="Exercise not found")
+        return db_query
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) 
