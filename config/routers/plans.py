@@ -1,32 +1,41 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from config.schemas.plans import *
 from sqlalchemy.orm import Session
 from config.db.database import get_db
 from config.db.models import *
 from config.services.plans import *
+from typing import Annotated
 
 router = APIRouter(tags=["plans"])
 
 
 @router.post("/create-plan")
 async def create_plan_router(
-    plan: CreatePlan,
+    name: Annotated[str, Form()],
+    gener: Annotated[str, Form()],
+    level: Annotated[str, Form()],
+    work_out_type: Annotated[str, Form()],
+    required_time: Annotated[int, Form()],
+    plan_session_type: Annotated[str, Form()],
+    sessions: Annotated[str, Form()],
+    file: Annotated[UploadFile, File(description="A file read as UploadFile")],
     db: Session = Depends(get_db),
 ):
+    plan = CreatePlan(
+        name=name,
+        gener=gener,
+        level=level,
+        work_out_type=work_out_type,
+        required_time=required_time,
+        plan_session_type=plan_session_type,
+        sessions=sessions
+    )
     try:
-        object = await create_plan_service(plan, db)
+        object = await create_plan_service(plan, file, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.patch("/update-plan")
-async def update_plan_router(plan: UpdatePlan, db: Session = Depends(get_db)):
-    try:
-        object = await update_plan_service(plan, db)
-        return object
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("/remove-plan")
@@ -50,7 +59,7 @@ async def get_all_plan_router(db: Session = Depends(get_db)):
 @router.get("/get-single-plan/{plan_id}")
 async def get_single_plan_router(plan_id: int, db: Session = Depends(get_db)):
     try:
-        object = await get_single_plan_service(plan_id,db)
+        object = await get_single_plan_service(plan_id, db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

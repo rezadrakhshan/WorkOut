@@ -1,23 +1,20 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional,Annotated
+from fastapi import Form
 
 
 class CreatePlan(BaseModel):
-    name: str
-    gener: str
-    image: str
-    level: str
-    work_out_type: str
-    required_time: int
-    plan_session_type: str
-    sessions: str
-
+    name: Annotated[str, Form()]
+    gener: Annotated[str, Form()]
+    level: Annotated[str, Form()]
+    work_out_type: Annotated[str, Form()]
+    required_time: Annotated[int, Form()]
+    plan_session_type: Annotated[str, Form()]
+    sessions: Annotated[str, Form()]
 
 class UpdatePlan(BaseModel):
-    id: int
     name: Optional[str] = None
     gener: Optional[str] = None
-    image: Optional[str] = None
     level: Optional[str] = None
     work_out_type: Optional[str] = None
     required_time: Optional[int] = None
