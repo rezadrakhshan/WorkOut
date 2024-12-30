@@ -83,4 +83,3 @@ async def update_profile_router(
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
