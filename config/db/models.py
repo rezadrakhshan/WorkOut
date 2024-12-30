@@ -1,6 +1,6 @@
 from config.db.database import Base
 from sqlalchemy.types import String, Integer, Boolean, PickleType
-from sqlalchemy import Column
+from sqlalchemy import Column, ForeignKey
 
 
 class User(Base):
@@ -9,8 +9,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-
-
 
 
 class Plan(Base):
@@ -40,3 +38,11 @@ class Exercise(Base):
     number_of_sets = Column(Integer)
     required_time = Column(Integer)
     description = Column(String)
+
+
+class Profile(Base):
+    __tablename__ = "profiles"
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    name = Column(String, default=None)
+    user_name = Column(String, unique=True, default=None)
+    image = Column(String)
