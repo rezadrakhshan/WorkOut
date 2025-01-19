@@ -32,6 +32,7 @@ class Exercise(Base):
     name = Column(String)
     image = Column(String)
     need_equipment = Column(Boolean, default=False)
+    equipment_type = Column(String)
     muscle = Column(String)
     difficulty = Column(String)
     sets = Column(PickleType)

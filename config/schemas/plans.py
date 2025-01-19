@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional
 
 
 class CreatePlan(BaseModel):
@@ -9,7 +9,8 @@ class CreatePlan(BaseModel):
     work_out_type: str
     required_time: int
     plan_session_type: str
-    sessions: str
+    image:str
+    sessions: list = []
 
 
 class RemovePlan(BaseModel):
@@ -21,7 +22,7 @@ class CreateExercise(BaseModel):
     need_equipment: bool
     muscle: str
     difficulty: str
-    sets: List[int]
+    sets: list = []
     number_of_sets: int
     required_time: int
     description: str

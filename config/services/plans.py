@@ -1,20 +1,13 @@
 from config.db.models import Plan, Exercise
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, UploadFile
-import uuid
-import aiofiles
-from config.schemas.plans import CreateExercise
+from fastapi import HTTPException
 
 
-async def create_plan_service(plan, file, db: Session):
-    filename = f"{uuid.uuid4().hex}_{file.filename}"
-    with open(f"config/uploaded_files/Plan/{filename}", "wb") as f:
-        content = await file.read()
-        f.write(content)
+async def create_plan_service(plan, db: Session):
     new_plan = Plan(
         name=plan.name,
         gener=plan.gener,
-        image=f"config/uploaded_files/Plan/{filename}",
+        image=plan.image,
         level=plan.level,
         work_out_type=plan.work_out_type,
         required_time=plan.required_time,
@@ -24,7 +17,7 @@ async def create_plan_service(plan, file, db: Session):
     db.add(new_plan)
     db.commit()
     db.refresh(new_plan)
-    return {"msg": new_plan}
+    return {"data": new_plan, "message": "plan created"}
 
 
 async def remove_plan_service(plan_id, db: Session):
@@ -43,30 +36,8 @@ async def get_single_plan_service(plan_id, db: Session):
     return db_query
 
 
-async def create_exercise_service(
-    exercise: CreateExercise, file: UploadFile, db: Session
-):
-    filename = f"{uuid.uuid4().hex}_{file.filename}"
-    async with aiofiles.open(f"config/uploaded_files/exercise/{filename}", "wb") as f:
-        content = await file.read()
-        await f.write(content)
-
-    new_exercise = Exercise(
-        name=exercise.name,
-        image=f"config/uploaded_files/exercise/{filename}",
-        need_equipment=exercise.need_equipment,
-        muscle=exercise.muscle,
-        difficulty=exercise.difficulty,
-        sets=exercise.sets,
-        number_of_sets=exercise.number_of_sets,
-        required_time=exercise.required_time,
-        description=exercise.description,
-    )
-
-    db.add(new_exercise)
-    db.commit()
-    db.refresh(new_exercise)
-    return {"msg": new_exercise}
+async def create_exercise_service(db: Session):
+    pass
 
 
 async def remove_exercise_service(id, db: Session):
@@ -84,4 +55,3 @@ async def get_all_plan_service(type, db: Session):
         return db_query
     db_query = db.query(Plan).all()
     return db_query
-
