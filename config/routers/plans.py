@@ -50,10 +50,12 @@ async def get_single_plan_router(plan_id: int, db: Session = Depends(get_db)):
 
 @router.post("/create-exercise")
 async def create_exercise_router(
+    exe: CreateExercise,
     db: Session = Depends(get_db),
 ):
     try:
-        pass
+        object = await create_exercise_service(exe, db)
+        return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

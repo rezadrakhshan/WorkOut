@@ -20,6 +20,8 @@ class RemovePlan(BaseModel):
 class CreateExercise(BaseModel):
     name: str
     need_equipment: bool
+    equipment_type:str
+    image:str
     muscle: str
     difficulty: str
     sets: list = []

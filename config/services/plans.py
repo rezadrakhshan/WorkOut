@@ -36,8 +36,23 @@ async def get_single_plan_service(plan_id, db: Session):
     return db_query
 
 
-async def create_exercise_service(db: Session):
-    pass
+async def create_exercise_service(exe, db: Session):
+    new_exe = Exercise(
+        name=exe.name,
+        image=exe.image,
+        need_equipment=exe.need_equipment,
+        equipment_type=exe.equipment_type,
+        muscle=exe.muscle,
+        difficulty=exe.difficulty,
+        sets=exe.sets,
+        number_of_sets=exe.number_of_sets,
+        required_time=exe.required_time,
+        description=exe.description,
+    )
+    db.add(new_exe)
+    db.commit()
+    db.refresh(new_exe)
+    return {"data":new_exe,"message":"exercise created"}
 
 
 async def remove_exercise_service(id, db: Session):
