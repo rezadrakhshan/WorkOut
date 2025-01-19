@@ -11,17 +11,6 @@ from typing import Dict
 router = APIRouter(tags=["Authentication"])
 
 
-@router.post("/get_user_information")
-def get_user_information_router(
-    user: GetUserInformation, db: Session = Depends(get_db)
-):
-    try:
-        object = get_user_information(user, db)
-        return object
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @router.post("/sign_up", response_model=dict)
 def sign_up_router(user: SignUp, db: Session = Depends(get_db)):
     try:
@@ -64,22 +53,12 @@ def change_password_router(user: ChangePassword, db: Session = Depends(get_db)):
 
 @router.patch("/update-profile")
 async def update_profile_router(
-    token=Form(),
-    name=Form(None),
-    user_name=Form(None),
-    email=Form(None),
-    image: UploadFile = File(None),
+    token:str,
+    user:UpdateProfileRequest,
     db: Session = Depends(get_db),
 ):
     try:
-        data = {
-            "token": token,
-            "name": name,
-            "user_name": user_name,
-            "email": email,
-            "image": image,
-        }
-        object = await update_profile_service(data, db)
+        object = await update_profile_service(token,user,db)
         return object
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -77,32 +77,15 @@ def change_password_service(user, db):
         raise HTTPException(status_code=404, detail="Email is invalid")
 
 
-async def update_profile_service(data, db: Session):
-    user = get_current_user(data["token"])
-    if user is None:
-        raise ValueError("Invalid or expired token")
-    get_user = db.query(User).filter(User.id == int(user["sub"])).first()
-    get_profile = db.query(Profile).filter(Profile.user_id == get_user.id).first()
-    print(3)
-    if data["name"] != "string" and data["name"] != "":
-        get_profile.name = data["name"]
-    if data["user_name"] != "string" and data["user_name"] != "":
-        get_profile.user_name = data["user_name"]
-    if data["email"] != "string" and data["email"] != "":
-        get_profile.email = data["email"]
-    if data["image"] != "no.txt" and data["image"] != "":
-        filename = f"{uuid.uuid4().hex}_{data['image'].filename}"
-        if get_profile.image == "config/uploaded_files/User/default.jpg":
-            with open(f"config/uploaded_files/User/{filename}", "wb") as f:
-                content = await data["image"].read()
-                f.write(content)
-            get_profile.image = f"config/uploaded_files/User/{filename}"
-        else:
-            os.remove(get_profile.image)
-            with open(f"config/uploaded_files/User/{filename}", "wb") as f:
-                content = await data["image"].read()
-                f.write(content)
-            get_profile.image = f"config/uploaded_files/User/{filename}"
-            get_profile.image = f"config/uploaded_files/User/{filename}"
+async def update_profile_service(token, user,db: Session):
+    user_id = get_current_user(token)
+    get_user = db.query(User).filter(User.id == int(user_id["sub"])).first()
+    profile_data = db.query(Profile).filter(Profile.user_id == get_user.id).first()
+    if user.name != "string":
+        profile_data.name = user.name
+    if user.user_name != "string":
+        profile_data.user_name = user.user_name
+    if user.image != "string":
+        profile_data.image = user.image
     db.commit()
-    return {"msg": "ok"}
+    return {"message":"Profile Updated"}

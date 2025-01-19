@@ -19,3 +19,9 @@ class GetUserInformation(BaseModel):
 class ChangePassword(BaseModel):
     email: str
     new_password: str
+
+
+class UpdateProfileRequest(BaseModel):
+    name: Optional[str] = None
+    user_name: Optional[str] = None
+    image: Optional[str] = None
