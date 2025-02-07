@@ -11,12 +11,34 @@ router = APIRouter(tags=["plans"])
 
 @router.post("/create-plan")
 async def create_plan_router(
-    plan: CreatePlan,
+    name: Annotated[str, Form()],
+    gener: Annotated[str, Form()],
+    level: Annotated[str, Form()],
+    work_out_type: Annotated[str, Form()],
+    required_time: Annotated[int, Form()],
+    plan_session_type: Annotated[str, Form()],
+    image: Annotated[UploadFile, File()],
+    sessions: Annotated[list, Form()],
     db: Session = Depends(get_db),
 ):
     try:
-        object = await create_plan_service(plan, db)
-        return object
+        with open(f"config/uploaded_files/Plan/{image.filename}", "wb") as f:
+            content = await image.read()
+            f.write(content)
+        new_plan = Plan(
+            name=name,
+            gener=gener,
+            image=image.filename,
+            level=level,
+            work_out_type=work_out_type,
+            required_time=required_time,
+            plan_session_type=plan_session_type,
+            sessions=sessions,
+        )
+        db.add(new_plan)
+        db.commit()
+        db.refresh(new_plan)
+        return new_plan
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
