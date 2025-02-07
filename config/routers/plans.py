@@ -72,12 +72,38 @@ async def get_single_plan_router(plan_id: int, db: Session = Depends(get_db)):
 
 @router.post("/create-exercise")
 async def create_exercise_router(
-    exe: CreateExercise,
+    name: Annotated[str, Form()],
+    need_equipment: Annotated[bool, Form()],
+    equipment_type: Annotated[str, Form()],
+    image: Annotated[UploadFile, File()],
+    muscle: Annotated[str, Form()],
+    difficulty: Annotated[str, Form()],
+    sets: Annotated[list, Form()],
+    number_of_sets: Annotated[int, Form()],
+    required_time: Annotated[int, Form()],
+    description: Annotated[str, Form()],
     db: Session = Depends(get_db),
 ):
     try:
-        object = await create_exercise_service(exe, db)
-        return object
+        with open(f"config/uploaded_files/exercise/{image.filename}", "wb") as f:
+            content = await image.read()
+            f.write(content)
+        new_exe = Exercise(
+            name=name,
+            image=image.filename,
+            need_equipment=need_equipment,
+            equipment_type=equipment_type,
+            muscle=muscle,
+            difficulty=difficulty,
+            sets=sets,
+            number_of_sets=number_of_sets,
+            required_time=required_time,
+            description=description,
+        )
+        db.add(new_exe)
+        db.commit()
+        db.refresh(new_exe)
+        return new_exe
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
